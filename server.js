@@ -14,9 +14,11 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     
     //EASY FILTERING LIBRARY
-    _ = require('underscore');
+    _ = require('underscore'),
 
-
+    //get Sequelize with DB
+    db = require('./db.js');
+    
     //CALLING BODYPARSER FOR USE BEFORE USING IT PLEASE
     app.use(bodyParser.json());
 
@@ -52,15 +54,22 @@ app.get('/todos/:id', function(req, res){
 
 app.post('/todos', function(req, res){
     var body = _.pick(req.body, 'description', 'completed'); // UNDERSCORE FILTERING FOR OBJECT ELEMENTS
-    body.description = body.description.trim();
-    body.id = todoNextId++;
-    todos.push(body);
-    res.json(todos); 
+   
+    db.todo.create(body).then(function(item){
+        res.json(item);
+    }, function(e){
+        res.status(400).json(e);
+    });
+    
+    //    body.description = body.description.trim();
+    //    body.id = todoNextId++;
+    //    todos.push(body);
+    //    res.json(todos); 
 });
 
 app.put('/todos/:id', function(req, res){
     
-    var todoId = parseInt(req.params.id, 10),
+    var todoId = parseInt(req.params.id, 10), // for some reason the id needs to be parsed to int ,JDI
         match = _.findWhere(todos, {id: todoId}),
         body = _.pick(req.body, 'description', 'completed'),
         attributes = {};
@@ -89,7 +98,11 @@ app.put('/todos/:id', function(req, res){
 });
 
 
-
-app.listen(PORT, function(){
+db.sequelize.sync().then(function(){
+   app.listen(PORT, function(){
    console.log('Express listening on port' + PORT); 
+   });
 });
+
+
+
