@@ -45,11 +45,12 @@ app.get('/todos/:id', function(req, res){
     var todoId = parseInt(req.params.id, 10),
         match = _.findWhere(todos, {id: todoId}); // UNDERSCORE LOCATING ARRAY OBJECT BY ID  
     
-    if(match){
-        res.json(match);
-    }else{
-        res.status(404).send();
-    }
+    db.todo.findById(todoId).then(function(thisobject){
+        res.json(thisobject);
+    }, function(err){
+        res.status(400).json(err);
+    });
+        
 });
 
 app.post('/todos', function(req, res){
