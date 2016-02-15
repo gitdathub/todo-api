@@ -27,14 +27,14 @@ var express = require('express'),
     });
 
     app.get('/todos', function(req, res){
-        var queryParams = req.query;
+        /*var queryParams = req.query;
         var filtodo = todos;
         
         if(queryParams.hasOwnProperty('q') && queryParams.q.length > 0){
             filtodo = _.filter(filtodo, function(todo){
                return todo.index(queryParams.q) > -1; 
             });
-        }
+        }*/
         
         res.json(db.todo); 
     });
