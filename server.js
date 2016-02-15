@@ -36,7 +36,7 @@ var express = require('express'),
             });
         }
         
-        res.json(todos); 
+        res.json(db.todo); 
     });
 
 app.get('/todos/:id', function(req, res){
