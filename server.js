@@ -36,7 +36,7 @@ var express = require('express'),
             });
         }*/
         
-        db.todo.findAll().then(function(allitems){
+        db.todo.findAll().then(function(allitems){ // for some reason res.json(db.todo) causes an error
            res.json(allitems); 
         });
     });
@@ -99,7 +99,16 @@ app.put('/todos/:id', function(req, res){
     res.json(todos);
     
 });
-
+app.post('/users', function(req,res){
+    var body = _.pick(req.body, 'email', 'password');
+    
+    
+    db.user.create(body).then(function(item){
+        res.json(item);
+    }, function(e){
+        res.status(400).json(e);
+    });
+})
 
 db.sequelize.sync().then(function(){
    app.listen(PORT, function(){
